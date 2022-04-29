@@ -1,9 +1,19 @@
 // Require Express.js and minimist
 const express = require("express")
-const minimist = require("minimist")
-const argv = minimist(process.argv.slice(2))
-const port = argv["port"] || 5000
+const args = require('minimist')(process.argv.slice(2));
+const port = args["port"] || args.p || 5000
 const app = express()
+console.log(args)
+
+// Require db
+const db = require('./database.js')
+// Require fs
+const fs = require('fs');
+// Require morgan
+const morgan = require('morgan')
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // functions
 function coinFlip() {
@@ -134,7 +144,7 @@ app.get('/app/flip/', (req, res) => {
       res.json({"flip": result});
   });
 
-// Define check endpoint
+// Flip multiple
 app.get('/app/flips/:number', (req, res) => {
   // Status code and message
       res.statusCode = 200;
@@ -145,7 +155,7 @@ app.get('/app/flips/:number', (req, res) => {
       res.json({"raw": flips, "summary": countFlips(flips)});
   });
 
-// Define check endpoint
+// Call heads
 app.get('/app/flip/call/heads', (req, res) => {
   // Respond with status and message
       res.statusCode = 200;
@@ -155,7 +165,7 @@ app.get('/app/flip/call/heads', (req, res) => {
       res.json(result);
   });
 
-// Define check endpoint
+// Call tails
 app.get('/app/flip/call/tails', (req, res) => {
   // Respond with status and message
       res.statusCode = 200;
